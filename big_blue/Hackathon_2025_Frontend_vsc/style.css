@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
+/* @import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"); */
 
 * {
     margin: 0;
@@ -9,7 +9,7 @@
 }
 
 h1 {
-    font-size:50px;
+    font-size:35px;
     line-height: 64px;
     color: black;
 
@@ -56,11 +56,19 @@ button.normal {
     padding: 15px 30px;
     color: black;
     background-color: white;
+    box-shadow: black;
     border-radius: 4px;
     cursor: pointer;
     border: none;
     outline: none;
     transition: 0.2s;
+
+    padding: 10px 20px;
+    border: 2px solid black;
+    color: black;
+    text-decoration: none;
+    display: inline-block;
+    border-radius: 5px;
 
 }
 
@@ -75,7 +83,7 @@ body {
     align-items: center;
     justify-content: space-between;
     padding: 20px 80px;
-    background: #aba48d;
+    background-color: rgb(33, 75, 184);
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.06);
     z-index: 999;
     position: sticky;
@@ -197,12 +205,24 @@ body {
 
 #banner {
     display: flex;
-    justify-content: center; /* Center horizontally */
-    align-items: center; /* Center vertically */
-    height: 100vh; /* Adjust height as needed */
+    justify-content: center; 
+    align-items: center; 
+    height: 100vh; 
+}
+
+#inner-box {
+    border: 2px solid #ccc; 
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1); 
+    background-color: #f9f9f9; 
+    text-align: center; 
 }
 
 
+#banner h1 {
+    color: maroon;
+}
 
 
 
