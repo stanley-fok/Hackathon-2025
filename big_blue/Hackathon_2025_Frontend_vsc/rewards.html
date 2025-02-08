@@ -51,7 +51,7 @@
 <script>
   async function fetchRewards() {
     try {
-      const res = await fetch("https://127.0.0.1:7878/rewards_data.json"); //swap with actual backend URL
+      const res = await fetch("http://127.0.0.1:7878/rewards_data.json"); //swap with actual backend URL
       if (!res.ok) throw new Error("Could not retrieve rewards");
 
       const rewards = await res.json();
