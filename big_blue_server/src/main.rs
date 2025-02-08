@@ -1,10 +1,18 @@
 use warp::{Filter, reply::Response};
-use std::fs::read;
+use std::{collections::HashMap, fs::read, fs::read_to_string, sync::{Arc, Mutex}};
 use big_blue_server::rewards::Reward;
 #[tokio::main]
 async fn main() {
-    let directory =std::env::current_dir().unwrap().to_str().unwrap().to_owned();
-    let filter = warp::any()
+    let directory = std::env::current_dir().unwrap().to_str().unwrap().to_owned();
+    let accounts = read_to_string(directory.clone()+"/accounts.json").unwrap();
+    let user_data: Arc<Mutex<HashMap<String, big_blue_server::Account>>> = Arc::new(
+        Mutex::new(
+            serde_json::from_str(
+                &accounts
+            ).unwrap()
+        )
+    );
+    let filter = warp::get()
         .and(warp::path::full())
         .map(move |path: warp::filters::path::FullPath| {
             println!("{path:?}");
@@ -43,6 +51,36 @@ async fn main() {
             }
             response
         });
+    let login = {
+        let user_data = user_data.clone();
+        warp::post()
+            .and(warp::filters::body::form())
+            .and(warp::path("/login.html"))
+            .map(move |form_response: HashMap<String,String>| {
+                let mut user_data = user_data.lock().unwrap();
+                let username = form_response.get("username".into()).unwrap().to_owned();
+                if user_data.contains_key(&username) {
+                    //todo: add authentication
+                } else {
+                    //todo: add error
+                }
+            })
+    };
+    let register = {
+        let user_data = user_data.clone();
+        warp::post()
+            .and(warp::filters::body::form())
+            .and(warp::path("/register.html"))
+            .map(move |form_response: HashMap<String,String>| {
+                let mut user_data = user_data.lock().unwrap();
+                let username = form_response.get("username".into()).unwrap().to_owned();
+                if user_data.contains_key(&username) {
+                    //todo: add error
+                } else {
+                    //todo: add user creation
+                }
+            })
+    };
     warp::serve(filter)
         .run(([127,0,0,1], 7878))
         .await

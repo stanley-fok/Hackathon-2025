@@ -1,5 +1,7 @@
 pub mod rewards;
-struct Account {
+
+#[derive(serde::Serialize, serde::Deserialize)]
+pub struct Account {
     username: String,
     salt: String,
     hash: Vec<u8>,
