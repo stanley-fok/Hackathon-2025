@@ -338,8 +338,46 @@ form .text h3 a:hover {
 #banner h1 {
     color: maroon;
 }
-
-
+/* Plans Section, this has edits the plan's boxes*/
+.plansSection{
+    width: 30%;
+    text-align: center;
+    font-family:'Times New Roman';
+    padding: 2%;
+    border-color: rgb(33, 75, 184);
+    border-width: 5px;
+    border-radius: 10%;
+    border-style: solid;
+    margin: auto;
+  }
+.plansSection h1{ 
+    font-size: 25px;
+    color: maroon;
+    font-style: bold;
+    padding: 1px;
+}
+.plansSection h3{
+    font-size: 18px;
+    padding: 1%;
+}
+.plansButton{
+    position: relative;
+    background-color: rgb(33, 75, 184);
+    padding: 2%;
+    margin-top: 5%;
+    color:rgb(0, 0, 0);
+    font-size: 21px;
+    font-weight: bold;
+    border-radius: 10px;
+    text-decoration: none;
+    transition: all 0.3s ease-in-out;
+}
+.plansButton:hover{ 
+    background-color: grey;
+}
+#plansGroup{
+    display: flex;
+}
 
 
 
