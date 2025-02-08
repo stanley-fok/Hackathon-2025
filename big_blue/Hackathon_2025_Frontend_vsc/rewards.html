@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=588, initial-scale=1.0">
+  <title>Rewards Program</title>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="shortcut icon" href="#">
+  <script defer src="/script.js"></script>
+</head>
+
+<body>
+<section id="header">
+  <a href="#"><img src="" class="logo" alt="Logo" width="80" height="80"></a>
+  <div class="nav">
+    <ul id="navbar">
+      <li><a href="index.html">Home</a></li>
+      <li><a class="active" href="rewards.html">Rewards</a></li>
+      <li><a href="plans.html">Plans</a></li>
+      <li><a href="info.html">Info</a></li>
+    </ul>
+  </div>
+</section>
+
+<section id="hero">
+  <h2>Earn Rewards Easily</h2>
+  <p>Rewards are increased by making consistent contributions and reviewing your plan regularly.</p>
+  <ul>
+    <li>✅ Regular contributions add bonus interest.</li>
+    <li>✅ Monthly check-ins unlock bonus contributions on us.</li>
+    <li>✅ You will find your rewards below...</li>
+  </ul>
+</section>
+
+<section id="banner">
+  <div id="first-container">
+    <h2>Rewards</h2>
+    <p>Earn extra funds and interest for saving consistently!</p>
+
+    <div id="your-rewards">
+      <h3>Your Rewards</h3>
+      <ul id="rewards-list"></ul>
+    </div>
+  </div>
+</section>
+<script>
+  async function fetchRewards() {
+    try {
+      const res = await fetch("https://127.0.0.1:7878/rewards"); //swap with actual backend URL
+      if (!res.ok) throw new Error("Could not retrieve rewards");
+
+      const rewards = await res.json();
+      const rewardsList = document.getElementById("rewards-list");
+
+      rewardsList.innerHTML = "";
+
+      if (rewards.length) {
+        rewards.forEach(({ type, amount }) => {
+          const item = document.createElement("li");
+          item.textContent = type === "contribution"
+            ? `+£${amount} added to your account!`
+            : `Interest rate increased by ${amount}%!`;
+          rewardsList.appendChild(item);
+        });
+      } else {
+        rewardsList.innerHTML = "<li>No rewards yet. Stay consistent!</li>";
+      }
+    } catch (err) {
+      console.error("Error fetching rewards:", err);
+      document.getElementById("rewards-list").innerHTML = "<li>Failed to load rewards</li>";
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", fetchRewards);
+</script>
+</body>
+</html>
