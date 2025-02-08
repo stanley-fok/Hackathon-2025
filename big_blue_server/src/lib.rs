@@ -1,3 +1,4 @@
+pub mod rewards;
 struct Account {
     username: String,
     salt: String,
@@ -61,7 +62,7 @@ impl<T: SavingsVehicle> BankAccount<T> {
     }
 
     fn project(self, period: usize) -> Result<Vec<u64>, ProjectionError> {
-        self.savings_vehicle(self.balance, period)
+        self.savings_vehicle.project(self.balance, period)
     }
 }
 
