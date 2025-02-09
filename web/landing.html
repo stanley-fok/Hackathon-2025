@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome</title>
+  <link rel="stylesheet" href="..\Hackathon_2025_Frontend_vsc\style.css">
+  <style>
+    #hero {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      height: 100vh;
+    }
+    .button-container {
+      display: flex;
+      gap: 30px;
+    }
+    .button {
+      padding: 15px 30px;
+      font-size: 16px;
+      font-weight: bold;
+      text-decoration: none;
+      border-radius: 10px;
+      transition: 0.3s;
+    }
+    .primary {
+      background-color: #007bff;
+      color: white;
+    }
+    .primary:hover {
+      background-color: #0056b3;
+    }
+    .secondary {
+      background-color: white;
+      border: 2px solid #007bff;
+      color: #007bff;
+    }
+    .secondary:hover {
+      background-color: #cccccc;
+    }
+  </style>
+</head>
+<body>
+<section id="header">
+  <a href="#"><img src="" class="logo" alt="Logo" width="80" height="80"></a>
+</section>
+
+<section id="hero">
+  <h2>Big Blue</h2>
+
+  <p>Your journey towards better financial freedom starts here.</p>
+  <p>Our app helps you build better habits with money, by being consistent with deposits and by checking out what you're investing in. Earn rewards, increase your savings, and take control of your financial future!</p>
+  <div class="button-container">
+    <a href="login.html" class="button primary">Login</a>
+    <a href="register.html" class="button secondary">Register</a>
+  </div>
+</section>
+</body>
+</html>
