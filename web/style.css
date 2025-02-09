@@ -335,24 +335,22 @@ form .text h3 a:hover {
 }
 
 
-#banner h1 {
-    color: maroon;
+.plansSection h1 {
+    color: white;
 }
 /* Plans Section, this has edits the plan's boxes*/
 .plansSection{
+    color: white;
     width: 30%;
     text-align: center;
     font-family:'Times New Roman';
     padding: 2%;
-    border-color: rgb(33, 75, 184);
-    border-width: 5px;
+    background-color: rgb(67, 99, 183);
     border-radius: 10%;
-    border-style: solid;
     margin: auto;
   }
 .plansSection h1{ 
     font-size: 25px;
-    color: maroon;
     font-style: bold;
     padding: 1px;
 }
@@ -362,15 +360,16 @@ form .text h3 a:hover {
 }
 .plansButton{
     position: relative;
-    background-color: rgb(33, 75, 184);
+    background-color: rgba(255, 255, 255, 0.87);
     padding: 2%;
     margin-top: 5%;
-    color:rgb(0, 0, 0);
+    color:rgb(20, 22, 87);
     font-size: 21px;
     font-weight: bold;
     border-radius: 10px;
     text-decoration: none;
     transition: all 0.3s ease-in-out;
+    border-style: outset;
 }
 .plansButton:hover{ 
     background-color: grey;
@@ -378,8 +377,16 @@ form .text h3 a:hover {
 #plansGroup{
     display: flex;
 }
-
-
+#plansTitleHeading h4{
+    color: rgb(225, 132, 26);
+    padding: 3%;
+}
+#plansTitleHeading h1{
+    color: rgb(20, 22, 87);
+}
+.hidden{
+    visibility: hidden;
+}
 
 
 
