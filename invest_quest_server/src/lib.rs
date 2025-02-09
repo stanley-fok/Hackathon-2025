@@ -43,6 +43,10 @@ impl Account {
     pub fn get_salt(&self) -> &str {
         &self.salt
     }
+
+    pub fn get_username(&self) -> &str {
+        &self.username
+    }
 }
 
 enum DepositError {
