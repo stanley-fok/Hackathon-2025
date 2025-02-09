@@ -4,12 +4,12 @@ use big_blue_server::rewards::Reward;
 #[tokio::main]
 async fn main() {
     let directory = std::env::current_dir().unwrap().to_str().unwrap().to_owned();
-    let accounts = read_to_string(directory.clone()+"/accounts.json").unwrap();
+    let accounts = read_to_string(directory.clone()+"/accounts.json").unwrap_or(String::new());
     let user_data: Arc<Mutex<HashMap<String, big_blue_server::Account>>> = Arc::new(
         Mutex::new(
             serde_json::from_str(
                 &accounts
-            ).unwrap()
+            ).unwrap_or(HashMap::new())
         )
     );
     let filter = warp::get()
@@ -55,33 +55,38 @@ async fn main() {
         let user_data = user_data.clone();
         warp::post()
             .and(warp::filters::body::form())
-            .and(warp::path("/login.html"))
+            .and(warp::path("login.html"))
             .map(move |form_response: HashMap<String,String>| {
+                println!("{form_response:?}");
                 let mut user_data = user_data.lock().unwrap();
-                let username = form_response.get("username".into()).unwrap().to_owned();
+                let username = form_response.get("username").unwrap().to_owned();
+                println!("{username}");
                 if user_data.contains_key(&username) {
                     //todo: add authentication
                 } else {
                     //todo: add error
                 }
+                "lol"
             })
     };
     let register = {
         let user_data = user_data.clone();
         warp::post()
             .and(warp::filters::body::form())
-            .and(warp::path("/register.html"))
+            .and(warp::path("register.html"))
             .map(move |form_response: HashMap<String,String>| {
+                println!("{form_response:?}");
                 let mut user_data = user_data.lock().unwrap();
-                let username = form_response.get("username".into()).unwrap().to_owned();
+                let username = form_response.get("username").unwrap().to_owned();
                 if user_data.contains_key(&username) {
                     //todo: add error
                 } else {
                     //todo: add user creation
                 }
+                "lol"
             })
     };
-    warp::serve(filter)
+    warp::serve(filter.or(login).or(register))
         .run(([127,0,0,1], 7878))
         .await
 }
