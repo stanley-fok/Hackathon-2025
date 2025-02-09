@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=588, initial-scale=1.0">
     <title>Registration / Sign-up Form</title>
-    <link rel="stylesheet" href="..\web\style.css"> <!-- linking css doc to html doc-->
+    <link rel="stylesheet" href="..\style.css"> <!-- linking css doc to html doc-->
 </head>
 
 <body class="reg-page">
@@ -13,20 +13,20 @@
         <h2>Registration</h2>
         <form action="/register.html" id="form" method="post">
             <div class="input-box">
-                <input type="text" placeholder="Enter your name" required>
+                <input type="text" name="username" placeholder="Enter your username" required>
             </div>
             <div class="input-box">
-                <input type="text" placeholder="Enter your e-mail" required>
+                <input type="text" name="e-mail" placeholder="Enter your e-mail" required>
             </div>
             <div class="input-box">
-                <input type="password" placeholder="Create password" required>
+                <input type="password" name="password" placeholder="Create password" required>
             </div>
             <div class="input-box">
-                <input type="password" placeholder="Confirm password" required>
+                <input type="password" name="passwordconfirm" placeholder="Confirm password" required>
             </div>
 
             <div class="policy">
-                    <input type="checkbox">
+                    <input type="checkbox" name="terms">
                     <h3>I accept all terms and conditions</h3>
             </div>
 
