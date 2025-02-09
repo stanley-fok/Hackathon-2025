@@ -334,45 +334,31 @@ form .text h3 a:hover {
     text-align: center; 
 }
 
-
-.plansSection h1 {
-    color: white;
-}
 /* Plans Section, this has edits the plan's boxes*/
 .plansSection{
     color: white;
-    width: 30%;
     text-align: center;
-    font-family:'Times New Roman';
-    padding: 2%;
     background-color: rgb(67, 99, 183);
-    border-radius: 10%;
-    margin: auto;
-  }
+    border-radius: 14%;
+    text-decoration: none;
+    transition: all 0.3s ease-in-out;
+    border-style: outset;
+    padding: 1%;
+    border: none;
+    
+}
 .plansSection h1{ 
-    font-size: 25px;
-    font-style: bold;
-    padding: 1px;
+    color: white;
+    font-size: 35px;
+    font-style: italic;
+    padding: 1%
 }
 .plansSection h3{
     font-size: 18px;
     padding: 1%;
 }
-.plansButton{
-    position: relative;
-    background-color: rgba(255, 255, 255, 0.87);
-    padding: 2%;
-    margin-top: 5%;
-    color:rgb(20, 22, 87);
-    font-size: 21px;
-    font-weight: bold;
-    border-radius: 10px;
-    text-decoration: none;
-    transition: all 0.3s ease-in-out;
-    border-style: outset;
-}
-.plansButton:hover{ 
-    background-color: grey;
+.plansSection:hover{ 
+    background-color: rgb(19, 19, 115);
 }
 #plansGroup{
     display: flex;

@@ -1,11 +1,12 @@
 
 const planSelectedElement = document.getElementById("planSelected");
-const buttons = document.querySelectorAll(".plansButton");
+const buttons = document.querySelectorAll(".plansSection");
 let titleData = ["Plan1","Plan2","Plan3","Plan4"]; 
 let descriptionData = ["text1","text2","text3","text4"];   // Data about descriptions should be placed here
 let durationData = [1,2,3,4];  // Data about time/duration should be placed here
 let interestData = [1,2,3,4];  // Data about interest should be placed here
 buttons.forEach((button, index) => {
+    console.log("Check Data Executed");
     let title = titleData[index];
     let description = descriptionData[index]; //Change this once data is implemented unless you import the data into the same array
     let duration = durationData[index];
@@ -23,6 +24,7 @@ buttons.forEach((button, index) => {
 
 buttons.forEach((button, index) => {
     button.addEventListener("click", () => {
+        console.log("Clicked");
         buttons.forEach((btn) => {
             btn.value = "Select";
         });
