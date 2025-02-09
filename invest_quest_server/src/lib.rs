@@ -1,22 +1,24 @@
 pub mod rewards;
 
-#[derive(serde::Serialize, serde::Deserialize)]
+#[derive(serde::Serialize, serde::Deserialize, Debug, Clone)]
 pub struct Account {
     username: String,
     salt: String,
     hash: Vec<u8>,
-    balance: u64
+    balance: u64,
+    email: String
 }
 
 impl Account {
-    fn new(username: &str, password: &str) -> Self {
+    pub fn new(username: &str, password: &str, email: &str) -> Self {
         //todo: proper authentication
         let salt = String::from("placeholder");
         Account {
             username: String::from(username),
             salt: salt.clone(),
             hash: (String::from_utf8(password.into()).unwrap()+&salt).into(),
-            balance: 0
+            balance: 0,
+            email: String::from(email)
         }
     }
 
@@ -32,6 +34,14 @@ impl Account {
         } else {
             Err(WithdrawError::InsufficientBalance)
         }
+    }
+
+    pub fn get_hash(&self) -> &[u8] {
+        &self.hash
+    }
+
+    pub fn get_salt(&self) -> &str {
+        &self.salt
     }
 }
 
