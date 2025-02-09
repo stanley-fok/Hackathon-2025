@@ -1,72 +1,74 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=588, initial-scale=1.0">
-    <title>Plans - Invest Quest</title>
-    <link rel="stylesheet" href="../web/style.css"> <!-- linking css doc to html doc-->
-    <link rel="shortcut icon" href="../web/logo.png">
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=588, initial-scale=1.0">
+  <title>Plans - Invest Quest</title>
+  <link rel="stylesheet" href="../web/style.css">
+  <link rel="shortcut icon" href="../web/logo.png">
 </head>
 
 
-<!--------Format to recieve data - (average, upper , lower)----->
 <body>
-    <section id="header">
-        <a href="#"><img src="../web/logo.png" class="logo" alt="Logo" width="80" height="80"></a>
-        <div class="nav">
-          <ul id="navbar">
-            <li><a href="index.html">Home</a></li>
-            <li><a href="rewards.html">Rewards</a></li>
-            <li><a class="active" href="plans.html">Plans</a></li>
-          </ul>
-        </div>
-    </section>
- 
-    <section id="hero">
-        <h2>Invest Quest</h2>
-        <h1>Current Plan: <span id = planSelected>None</span></h1><br>
+<section id="header">
+  <img src="../web/logo.png" class="logo" alt="Logo" width="80" height="80">
+  <div class="nav">
+    <ul id="navbar">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="rewards.html">Rewards</a></li>
+      <li><a class="active" href="plans.html">Plans</a></li>
+    </ul>
+  </div>
+</section>
 
-    </section>
-    <section id = plansTitleHeading>
-        <center><h4>What we offer.</h4></center>
-        <center><h1 style="padding-top: 1%;">Grow your saving, change your plan immediently.</h1></center>
-    </section>
-    <section id = "banner">
-        <button class = plansSection>
-            <h1 id = title1></h1>
-            <h3 id = description1></h3>
-            <h3>Duration: <span id = duration1> </span></h3>
-            <h3>Average Interest: <span id = interest1> </span></h3>
-        </button>
-        <button class = plansSection>
-            <h1 id = title2></h1>
-            <h3 id = description2></h3>
-            <h3>Duration: <span id = duration2></span></h3>
-            <h3>Average Interest: <span id = interest2> </span></h3>
-        </button>
-        <button class= plansSection>
-            <h1 id = title3></h1>
-            <h3 id = description3></h3>
-            <h3>Duration: <span id = duration3> </span></h3>
-            <h3>Average Interest: <span id = interest3> </span></h3>
-        </button>
-    </section>
+<section id="hero">
+  <h2>Invest Quest</h2>
+  <h1>Current Plan: <span id = planSelected>None</span></h1><br>
 
-    <script>
+</section>
+<center><h1 style="padding-top: 7%;">Your Plan Options</h1></center>
+<section id = "banner">
+  <section class= plansSection>
+    <h1 id = title1></h1>
+    <br>
+    <h3 id = description1></h3>
+    <h3>Duration: <span id = duration1> </span></h3>
+    <h3>Average Interest: <span id = interest1> </span></h3>
+    <br>
+    <input type="button" class ="plansButton" value="Select">
+  </section>
+  <section class= plansSection>
+    <h1 id = title2></h1>
+    <br>
+    <h3 id = description2></h3>
+    <h3>Duration: <span id = duration2></span></h3>
+    <h3>Average Interest: <span id = interest2> </span></h3>
+    <br>
+    <input type="button" class ="plansButton" value="Select">
+  </section>
+  <section class= plansSection>
+    <h1 id = title3></h1>
+    <br>
+    <h3 id = description3></h3>
+    <h3>Duration: <span id = duration3> </span></h3>
+    <h3>Average Interest: <span id = interest3> </span></h3>
+    <br>
+    <input type="button" class ="plansButton" value="Select">
+  </section>
+</section>
 
-    
-    var navbar = document.getElementById("navbar");
+<script>
+  var navbar = document.getElementById("navbar");
+  function openmenu(){
+    navbar.style.right = "0";
+  }
 
-    function openmenu(){
-        navbar.style.right = "0";
-    }
-    
-    function closemenu(){
-        navbar.style.right = "-260px";
-    }
-    </script>
+  function closemenu(){
+    navbar.style.right = "-260px";
+  }
+</script>
 
-<script src="../web/backend.js"></script>    
+<script src="../web/backend.js"></script>
 </body>
 </html>

@@ -2,7 +2,7 @@
 const planSelectedElement = document.getElementById("planSelected");
 const buttons = document.querySelectorAll(".plansSection");
 let titleData = ["Plan1","Plan2","Plan3","Plan4"]; 
-let descriptionData = ["text1","text2","text3","text4"];   // Data about descriptions should be placed here
+let descriptionData = ["","","",""];   // Data about descriptions should be placed here
 let durationData = [1,2,3,4];  // Data about time/duration should be placed here
 let interestData = [1,2,3,4];  // Data about interest should be placed here
 buttons.forEach((button, index) => {

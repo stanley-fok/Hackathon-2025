@@ -1,378 +1,230 @@
-/* @import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"); */
+/* Import Google Fonts for modern typography */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap");
 
+/* Global Reset */
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Spartan', sans-serif;
-    
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Inter", sans-serif;
 }
 
-h1 {
-    font-size:35px;
-    line-height: 64px;
-    color: black;
-
-}
-
-h2 {
-    font-size:46px;
-    line-height: 54px;
-    color: black;
-}
-
-
-h4 {
-    font-size:20px;
-    color: black;
-}
-
-
-h6 {
-    font-weight: 700;
-    font-size:12px;
-
-}
-
-p {
-    font-size:16px;
-    margin: 15px 0 20px 0;
-    color: gray;
-}
-
-.section-p1 {               /* spacing class */
-    padding: 40px 80px;
-}
-
-.section-m1 {               /* margin class */
-    margin: 40px 0;
-
-
-}
-
-button.normal {
-    font-size: 14px;
-    font-weight: 600;
-    padding: 15px 30px;
-    color: black;
-    background-color: white;
-    box-shadow: black;
-    border-radius: 4px;
-    cursor: pointer;
-    border: none;
-    outline: none;
-    transition: 0.2s;
-
-    padding: 10px 20px;
-    border: 2px solid black;
-    color: black;
-    text-decoration: none;
-    display: inline-block;
-    border-radius: 5px;
-
-}
-
+/* General Page Styles */
 body {
-    width: 100%;
+  background: linear-gradient(135deg, #0f172a, #1e40af, #3b82f6);
+  color: white;
+  width: 100%;
+  min-height: 100vh;
 }
 
-.reg-page {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: #4070f4;
-}
-
-.wrapper {
-    position: relative;
-    max-width: 430px;
-    width: 100%;
-    background: #fff;
-    padding: 34px;
-    border-radius: 6px;
-    box-shadow: 0 5px 10px rgba(0,0,0,0.2);
-}
-
-.wrapper h2 {
-    position: relative;
-    font-size: 22px;
-    font-weight: 600;
-    color: #333;
-}
-
-.wrapper h2::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    height: 3px;
-    width: 28px;
-    border-radius: 12px;
-    background: #4070f4;
-
-}
-
-.wrapper form {
-    margin-top: 25px;
-}
-
-.wrapper form .input-box {
-    height: 52px;
-    padding: 5px;
-
-}
-
-form .input-box input {
-    height: 100%;
-    width: 100%;
-    outline: none;
-    padding: 15px;
-    font-size: 17px;
-    font-weight: 400;
-    color: #333;
-    border: 1.5px solid #C7BEBE;
-    border-bottom-width: 2.5px;
-    border-radius: 6px;
-    transition: all 0.3s ease;
-
-}
-
-.input-box input:focus,
-.input-box input:valid {
-    border-color: #4070f4;
-
-}
-
-form .policy {
-    padding: 5px;
-    display: flex;
-    align-items: center;
-}
-
-form h3 {
-    font-size: 14px;
-    font-weight: 500;
-    color: #707070;
-    margin-left: 10px;
-}
-
-form .input-box.button input {
-    background:#4070f4;
-    color: #fff;
-    letter-spacing: 1px;
-    border: none;
-    cursor: pointer;
-
-}
-
-.input-box.button input:hover {
-    background: #0e4bf1;
-
-}
-
-form .text h3 {
-    padding: 5px;
-    color: #333;
-    width: 100%;
-    text-align: center;
-
-}
-
-form .text h3 a {
-    color: #4070f4;
-    text-decoration: none;
-
-}
-
-form .text h3 a:hover {
-    text-decoration: underline;
-
-}
-
-
-
-
+/* Header */
 #header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 20px 80px;
-    background-color: rgb(33, 75, 184);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.06);
-    z-index: 999;
-    position: sticky;
-    top: 0;
-    left: 0;
-    
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 15px 40px;
+  border-radius: 12px;
+  width: 90%;
+  margin: 20px auto;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
 }
 
-
+/* Navbar */
 #navbar {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
+  list-style: none;
+  display: flex;
 }
 
-
-
- /*padding is used to put spaces in between list of texts*/
-
-#navbar li{
-    list-style: none;               
-    padding: 0 20px;   
-    position: relative;
-
-
-}       
-   
-/* styling the texts itself under li "a" which is text */
-#navbar li a{
-    text-decoration: none;
-    font-size: 16px;
-    font-weight: 600;
-    color: black;
-    transition: 0.3s ease;
-
+#navbar li {
+  margin: 0 15px;
 }
 
-/* styling hover text color*/
+#navbar li a {
+  text-decoration: none;
+  color: white;
+  font-weight: 600;
+  padding: 10px 15px;
+  border-radius: 8px;
+  transition: background 0.3s, transform 0.2s;
+}
+
 #navbar li a:hover,
 #navbar li a.active {
-    color: rgb(219, 211, 211)
-
-
-}
-/* underlines for other hovers, "after" is when we start using underline; position relative makes it for home only*/
-#navbar li a.active::after,
-#navbar li a:hover::after {
-    content: "";
-    width: 30%;
-    height: 2px;
-    background: rgb(219, 211, 211);
-    position: absolute;
-    bottom: -4px;
-    left: 20px;
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.1);
 }
 
-
-
-
+/* Hero Section */
 #hero {
-    /* background-image: url("images/model1.png"); */
-    background-color: whitesmoke;
-    height: 100vh;
-    width: 100%;
-    background-size: 500px;
-    background-repeat: no-repeat;
-    background-position: 90% 100%;
-    padding: 0 80px;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: center;
-
-    
+  text-align: center;
+  padding: 60px 20px;
+  max-width: 700px;
+  margin: 0 auto;
 }
 
-#hero h2{
-    padding-bottom: 15px;
-
+#hero h2 {
+  font-size: 42px;
+  font-weight: 700;
+  color: #60a5fa;
 }
 
-#hero h1{
-    color: maroon;
-
-    
+#hero h1 {
+  font-size: 36px;
+  font-weight: 700;
 }
 
+/* Opaque Box */
+.opaque-box {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 25px;
+  border-radius: 15px;
+  box-shadow: 0 4px 10px rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(12px);
+  text-align: center;
+  max-width: 400px;
+  width: 90%;
+  margin: 30px auto;
+}
 
-
-/* Banner */
-
-
+/* Banner Section */
 #banner {
-    display: flex; 
-    align-items: center; 
-    gap: 20px;
-
-    
-
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  padding: 40px;
+  flex-wrap: wrap;
 }
 
-#banner .first-container {
-    width: 150px; 
-    height: 150px; 
-    background-color: white; 
-    display: flex; 
-    align-items: center; 
-    justify-content: center;
-
+/* Plans Section */
+.plansSection {
+  flex: 1;
+  max-width: 300px;
+  background: rgba(255, 255, 255, 0.15);
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(255, 255, 255, 0.15);
+  text-align: center;
+  backdrop-filter: blur(10px);
 }
-
-#banner .first-container img {
-    width: 150px; 
-    height: 150px; 
-    object-fit: cover;
-
-}
-
-#banner {
-    display: flex;
-    justify-content: center; 
-    align-items: center; 
-    height: 100vh; 
-}
-
-#inner-box {
-    border: 2px solid #ccc; 
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1); 
-    background-color: #f9f9f9; 
-    text-align: center; 
-}
-
-/* Plans Section, this has edits the plan's boxes*/
-.plansSection{
-    color: white;
-    text-align: center;
-    background-color: rgb(67, 99, 183);
-    border-radius: 14%;
-    text-decoration: none;
-    transition: all 0.3s ease-in-out;
-    border-style: outset;
-    padding: 1%;
-    border: none;
-    
-}
-.plansSection h1{ 
-    color: white;
-    font-size: 35px;
+/* Font for Title on Plans Section*/
+.plansSection h1{
+    font-size: 25px;
     font-style: italic;
-    padding: 1%
-}
-.plansSection h3{
-    font-size: 18px;
-    padding: 1%;
-}
-.plansSection:hover{ 
-    background-color: rgb(19, 19, 115);
-}
-#plansGroup{
-    display: flex;
-}
-#plansTitleHeading h4{
-    color: rgb(225, 132, 26);
-    padding: 3%;
-}
-#plansTitleHeading h1{
-    color: rgb(20, 22, 87);
-}
-.hidden{
-    visibility: hidden;
 }
 
+/* Buttons */
+.plansButton,
+.input-box.button input {
+  font-size: 16px;
+  font-weight: 600;
+  padding: 12px 25px;
+  color: white;
+  background: linear-gradient(90deg, #2563eb, #9333ea);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s;
+}
 
+.plansButton:hover,
+.input-box.button input:hover {
+  background: linear-gradient(90deg, #1e40af, #7c3aed);
+  transform: scale(1.05);
+}
 
+/* Responsive Styles */
+@media (max-width: 768px) {
+  #header {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  #navbar {
+    flex-direction: column;
+  }
+
+  #navbar li {
+    margin: 5px 0;
+  }
+
+  #hero h2 {
+    font-size: 32px;
+  }
+
+  #banner {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .plansSection {
+    max-width: 100%;
+  }
+}
+
+/* Custom List */
+.custom-list {
+  list-style: none;
+  padding: 0;
+  margin: 20px 0;
+}
+
+.custom-list li {
+  margin-bottom: 5px;
+}
+
+/* Form Container */
+.form-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+/* Input Fields */
+.input-box input {
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0;
+  border: none;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  font-size: 16px;
+  outline: none;
+}
+
+.input-box input::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.input-box input:-webkit-autofill {
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: white !important;
+  -webkit-text-fill-color: white !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+/* Privacy Policy Checkbox */
+.policy {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 10px 0;
+}
+
+.policy input {
+  margin-right: 10px;
+}
+
+/* Links */
+.text a {
+  color: #60a5fa;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.text a:hover {
+  text-decoration: underline;
+}

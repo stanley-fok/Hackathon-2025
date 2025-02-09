@@ -1,54 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=588, initial-scale=1.0">
-    <title>Registration - Invest Quest</title>
-    <link rel="stylesheet" href="..\style.css"> <!-- linking css doc to html doc-->
-    <link rel="shortcut icon" href="../web/logo.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register - Invest Quest</title>
+  <link rel="stylesheet" href="../web/style.css">
+  <link rel="shortcut icon" href="../web/logo.png">
 </head>
 
 <body class="reg-page">
-    <div class="wrapper">
-        <h2>Registration</h2>
-        <form action="/landing.html" id="form" method="post">
-            <div class="input-box">
-                <input type="text" name="username" placeholder="Enter your username" required>
-            </div>
-            <div class="input-box">
-                <input type="text" name="e-mail" placeholder="Enter your e-mail" required>
-            </div>
-            <div class="input-box">
-                <input type="password" name="password" placeholder="Create password" required>
-            </div>
-            <div class="input-box">
-                <input type="password" name="passwordconfirm" placeholder="Confirm password" required>
-            </div>
-
-            <div class="policy">
-                    <input type="checkbox" name="terms">
-                    <h3>I accept all terms and conditions</h3>
-            </div>
-
-            <div class="input-box button">
-                <input type="Submit" value="Register Now">
-            </div>
-
-            <div class="text">
-                <h3>Already have an account? <a href="/login.html">Login now</a></h3>
-
-            </div>
-        </form>
-    </div> 
+<div class="form-container">
+  <div class="opaque-box">
+    <h2>Register</h2>
+    <form id="form" action="/landing.html" method="post">
+      <div class="input-box">
+        <input type="text" name="username" placeholder="Enter your username" required>
+      </div>
+      <div class="input-box">
+        <input type="text" name="e-mail" placeholder="Enter your e-mail" required>
+      </div>
+      <div class="input-box">
+        <input type="password" name="password" placeholder="Create password" required>
+      </div>
+      <div class="input-box">
+        <input type="password" name="passwordconfirm" placeholder="Confirm password" required>
+      </div>
+      <div class="policy">
+        <input type="checkbox" name="terms">
+        <h3>I accept all terms and conditions</h3>
+      </div>
+      <div class="input-box button">
+        <input type="submit" value="Register Now">
+      </div>
+      <div class="text">
+        <h3>Already have an account? <a href="/login.html">Login now</a></h3>
+      </div>
+    </form>
+  </div>
+</div>
 
 <script>
-    document.getElementById("form").addEventListener("submit", function(event) {
-        event.preventDefault(); 
-
-        window.location.href = "/landing.html";
-    });
+  document.getElementById("form").addEventListener("submit", function(event) {
+    event.preventDefault();
+    window.location.href = "/landing.html";
+  });
 </script>
-    
+
 </body>
 </html>

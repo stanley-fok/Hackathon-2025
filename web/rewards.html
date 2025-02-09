@@ -11,7 +11,7 @@
 
 <body>
 <section id="header">
-  <a href="#"><img src="../web/logo.png" class="logo" alt="Logo" width="80" height="80"></a>
+  <img src="../web/logo.png" class="logo" alt="Logo" width="80" height="80">
   <div class="nav">
     <ul id="navbar">
       <li><a href="index.html">Home</a></li>
@@ -23,17 +23,19 @@
 
 <section id="hero">
   <h2>Earn Rewards Easily</h2>
-  <p>You can earn the following rewards</p>
-  <ul>
-    <li>🚀Interest rate Boosts</li>
-    <li>💵Bonus funds on Us</li>
+  <h3>You can earn the following rewards:</h3>
+  <ul class="custom-list">
+    <li>🚀 Interest rate boosts</li>
+    <li>💵 Bonus funds on us</li>
   </ul>
-  <p>Rewards are increased by making consistent contributions and reviewing your plan regularly.</p>
-  <ul>
+
+  <h3>Rewards are increased by making consistent contributions and reviewing your plan regularly:</h3>
+  <ul class="custom-list">
     <li>✅ Regular contributions add interest rate boosts.</li>
     <li>✅ Monthly check-ins unlock bonus funds on us!</li>
-    <li>You will find your rewards below...</li>
   </ul>
+
+  <p>You will find your rewards below...</p>
 </section>
 
 <section id="banner">
@@ -50,7 +52,7 @@
 <script>
   async function fetchRewards() {
     try {
-      const res = await fetch("http://127.0.0.1:7878/rewards_data.json"); //swap with actual backend URL
+      const res = await fetch("http://127.0.0.1:7878/rewards_data.json");
       if (!res.ok) throw new Error("Could not retrieve rewards");
 
       const rewards = await res.json();
@@ -71,7 +73,7 @@
       }
     } catch (err) {
       console.error("Error fetching rewards:", err);
-      document.getElementById("rewards-list").innerHTML = "<li>Failed to load rewards</li>";
+      document.getElementById("rewards-list").innerHTML = "<ul>Failed to load rewards</ul>";
     }
   }
 
