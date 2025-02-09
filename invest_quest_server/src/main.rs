@@ -4,7 +4,7 @@ use rand_chacha::ChaCha20Rng;
 use rand::SeedableRng;
 use warp::http::StatusCode;
 use invest_quest_server::{Account, rewards::Reward};
-use httpdate::fmt_http_date;
+use httpdate::{fmt_http_date, parse_http_date};
 #[tokio::main]
 async fn main() {
     let directory = || std::env::current_dir().unwrap().to_str().unwrap().to_owned();
@@ -28,45 +28,147 @@ async fn main() {
 
     let rng: Arc<Mutex<ChaCha20Rng>> = Arc::new(Mutex::new(ChaCha20Rng::from_os_rng()));
 
-    let filter = warp::get()
-        .and(warp::path::full())
+    let authorised = {
+        let sessions = sessions.clone();
+        warp::cookie::<String>("auth")
+            .and(warp::path::full())
+            .map(move |cookie: String, path: warp::filters::path::FullPath| {
+                let sessions = sessions.read().unwrap();
+                let session = sessions.get(&cookie);
+
+                //this if-else is a total mess, but I don't have time to work out how to do it properly
+                if session.map(|(_, exp)| &SystemTime::now()<=exp).unwrap_or(false) {
+                    println!("{path:?}");
+                    let mut not_found = false;
+                    let html = match path.as_str() {
+                        _ => {
+                            read((directory()+&path.as_str()).replace('/',"\\").replace("%20", " ")).unwrap_or_else(|e| {
+                                println!("{:?}",e);
+                                not_found = true;
+                                read(directory()+"/404.html").unwrap()
+                            })
+                        }
+                    };
+                    if path.as_str()=="/rewards_data.json" {
+                        println!("{}", String::from_utf8(html.clone()).unwrap())
+                    }
+                    let mut response = Response::new(html.into());
+                    match path.as_str().split_once('.') {
+                        Some((_, s @ ("jpg"|"png"))) => {
+                            if not_found {
+                                response.headers_mut()
+                                    .insert("Content-Type", str::parse("text/html")
+                                        .unwrap());
+                            } else {
+                                response.headers_mut()
+                                    .insert("Content-Type", str::parse(&("image/".to_owned() + s))
+                                        .unwrap());
+                            }
+                        }
+                        Some((_, s)) => {
+                            response.headers_mut()
+                                .insert("Content-Type", str::parse(&("text/".to_owned() + s))
+                                    .unwrap());
+                        }
+                        None => {}
+                    }
+                    response
+                } else {
+                    println!("{path:?}");
+                    let mut not_found = false;
+                    let mut response;
+                    match path.as_str() {
+                        "/landing.html" => {
+                            let body = read(directory()+path.as_str()).unwrap();
+                            response = Response::new(body.into());
+                            let _ = response.headers_mut().insert("Content-Type", "text/html".parse().unwrap());
+                        }
+                        "/style.css" => {
+                            let body = read(directory()+path.as_str()).unwrap();
+                            response = Response::new(body.into());
+                            let _ = response.headers_mut().insert("Content-Type", "text/css".parse().unwrap());
+                        }
+                        "/logo.png" => {
+                            let body = read(directory()+path.as_str()).unwrap();
+                            response = Response::new(body.into());
+                            let _ = response.headers_mut().insert("Content-Type", "image/png".parse().unwrap());
+                        }
+                        "/login.html" => {
+                            let body = read(directory()+path.as_str()).unwrap();
+                            response = Response::new(body.into());
+                            let _ = response.headers_mut().insert("Content-Type", "text/html".parse().unwrap());
+                        }
+                        "/register.html" => {
+                            let body = read(directory()+path.as_str()).unwrap();
+                            response = Response::new(body.into());
+                            let _ = response.headers_mut().insert("Content-Type", "text/html".parse().unwrap());
+                            let _ = response.headers_mut().insert("Content-Type", "text/html".parse().unwrap());
+                        }
+                        _ => {
+                            let body = read(directory()+"/landing.html").unwrap();
+                            response = Response::new(body.into());
+                            let mut headers = response.headers_mut();
+                            let _ = headers
+                                .insert("Content-Type", "text/html".parse().unwrap());
+                            let _ = headers
+                                .insert("Location", "/landing.html".parse().unwrap());
+                            *response.status_mut() = StatusCode::SEE_OTHER;
+                        }
+                    }
+                    response
+                }
+            })
+    };
+
+
+    let unauthorised = warp::path::full()
         .map(move |path: warp::filters::path::FullPath| {
             println!("{path:?}");
             let mut not_found = false;
-            let html = match path.as_str() {
+            let mut response;
+            match path.as_str() {
+                "/landing.html" => {
+                    let body = read(directory()+path.as_str()).unwrap();
+                    response = Response::new(body.into());
+                    let _ = response.headers_mut().insert("Content-Type", "text/html".parse().unwrap());
+                }
+                "/style.css" => {
+                    let body = read(directory()+path.as_str()).unwrap();
+                    response = Response::new(body.into());
+                    let _ = response.headers_mut().insert("Content-Type", "text/css".parse().unwrap());
+                }
+                "/logo.png" => {
+                    let body = read(directory()+path.as_str()).unwrap();
+                    response = Response::new(body.into());
+                    let _ = response.headers_mut().insert("Content-Type", "image/png".parse().unwrap());
+                }
+                "/login.html" => {
+                    let body = read(directory()+path.as_str()).unwrap();
+                    response = Response::new(body.into());
+                    let _ = response.headers_mut().insert("Content-Type", "text/html".parse().unwrap());
+                }
+                "/register.html" => {
+                    let body = read(directory()+path.as_str()).unwrap();
+                    response = Response::new(body.into());
+                    let _ = response.headers_mut().insert("Content-Type", "text/html".parse().unwrap());
+                    let _ = response.headers_mut().insert("Content-Type", "text/html".parse().unwrap());
+                }
                 _ => {
-                    read((directory()+&path.as_str()).replace('/',"\\").replace("%20", " ")).unwrap_or_else(|e| {
-                        println!("{:?}",e);
-                        not_found = true;
-                        read(directory()+"/404.html").unwrap()
-                    })
+                    let body = read(directory()+"/landing.html").unwrap();
+                    response = Response::new(body.into());
+                    let mut headers = response.headers_mut();
+                    let _ = headers
+                        .insert("Content-Type", "text/html".parse().unwrap());
+                    let _ = headers
+                        .insert("Location", "/landing.html".parse().unwrap());
+                    *response.status_mut() = StatusCode::SEE_OTHER;
                 }
-            };
-            if path.as_str()=="/rewards_data.json" {
-                println!("{}", String::from_utf8(html.clone()).unwrap())
-            }
-            let mut response = Response::new(html.into());
-            match path.as_str().split_once('.') {
-                Some((_, s @ ("jpg"|"png"))) => {
-                    if not_found {
-                        response.headers_mut()
-                            .insert("Content-Type", str::parse("text/html")
-                            .unwrap());
-                    } else {
-                        response.headers_mut()
-                            .insert("Content-Type", str::parse(&("image/".to_owned() + s))
-                            .unwrap());
-                    }
-                }
-                Some((_, s)) => {
-                    response.headers_mut()
-                        .insert("Content-Type", str::parse(&("text/".to_owned() + s))
-                        .unwrap());
-                }
-                None => {}
             }
             response
         });
+
+    let auth_or_no = warp::get().and(authorised.or(unauthorised));
+
     let login = {
         let user_data = user_data.clone();
         let accounts = accounts.clone();
@@ -93,7 +195,7 @@ async fn main() {
             })
     };
     let login_or_register = warp::post().and(login.or(register));
-    warp::serve(filter.or(login_or_register))
+    warp::serve(auth_or_no.or(login_or_register))
         .run(([127,0,0,1], 7878))
         .await
 }
@@ -213,4 +315,17 @@ fn handle_registration(register_result: Result<(), RegisterError>, directory: im
             response
         }
     }
+}
+
+fn get_duration_from_cookie(cookie_value: &String) -> Option<SystemTime> {
+    let start = cookie_value.find("Expires=")?+8;
+    let mut substr = &cookie_value[start..];
+    let end = substr.find(';').unwrap_or(substr.len());
+    let substr = &substr[..end];
+    parse_http_date(substr).ok()
+}
+
+fn get_value_from_cookie<'a>(cookie_value: &'a String) -> Option<&'a str> {
+    let end = cookie_value.find(';').unwrap_or(cookie_value.len());
+    Some(&cookie_value[..end])
 }
