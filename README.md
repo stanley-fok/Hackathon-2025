@@ -6,7 +6,7 @@ Transforming Financial Services with Technology.
 How can technology revolutionise banking and finance for everyday users?
 
 Team Name:
-Big Blue
+Invest Quest
 
 
 
