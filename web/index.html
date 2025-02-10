@@ -7,9 +7,35 @@
   <title>Home - Invest Quest</title>
   <link rel="stylesheet" href="/style.css">
   <link rel="shortcut icon" href="/logo.png">
+
+  <style>
+    #plan-container {
+      background: rgba(255, 255, 255, 0.2);
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 4px 10px rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(12px);
+      text-align: center;
+      max-width: 600px;
+      width: 90%;
+      margin: 50px auto;
+    }
+
+    #plan-container img {
+      width: 500px;
+      height: auto;
+      border-radius: 15px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+      display: block;
+      margin: 20px auto;
+    }
+
+  </style>
 </head>
 
 <body>
+
 <section id="header">
   <img src="/logo.png" class="logo" alt="logo" width="80" height="80">
   <div class="nav">
@@ -25,22 +51,17 @@
 <section id="hero">
   <h2>Hello...</h2>
   <h1>Your Portfolio</h1><br>
-  <h1>Balance: 5000</h1><br>
-  <h1>Current Plan</h1><br>
-
+  <h1>Balance : £5000.00</h1><br>
+  <h1>Current Plan : Savings Account</h1><br>
 </section>
 
 <section id="banner">
-  <div id="first-container">
-    <img src="/images/A_black_image.jpg.webp" alt="Image Description"><br><br>
-    <h6>Current Interest: ____</h6> <h6>Rate: ___%</h6>
-  </div>
-  <br><br><br>
-  <div id="second-container">
-    <div id="inner-box">
-      <h1>Check your current plan!</h1>
-    </div>
+  <div id="plan-container">
+    <h1>Check your current plan!</h1>
+    <img src="/plots/savings%20account.png" alt="Image Description"><br><br>
+    <h6>Current Interest: 4.5% AER</h6>
   </div>
 </section>
+
 </body>
 </html>
