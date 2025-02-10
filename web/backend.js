@@ -22,8 +22,7 @@ buttons.forEach((button, index) => {
     console.log("Plan which is chosen: " + chosenTitle);
     planSelectedElement.textContent = `${chosenTitle}`;
 
-    // Update the image source and make it visible
     planImageElement.src = `plots/${chosenImage}`;
-    planImageElement.style.display = "block"; // Make image visible
+    planImageElement.style.display = "block"; //Choose image and display the chosen one
   });
 });
