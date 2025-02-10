@@ -1,23 +1,29 @@
 pub mod rewards;
+use argon2::{Argon2, PasswordHasher, PasswordVerifier, password_hash::{Salt, rand_core::OsRng, SaltString}, PasswordHash};
 
 #[derive(serde::Serialize, serde::Deserialize, Debug, Clone)]
 pub struct Account {
     username: String,
-    salt: String,
-    hash: Vec<u8>,
+    hash: String,
     balance: u64,
     email: String
 }
 
 impl Account {
-    pub fn new(username: &str, password: &str, email: &str) -> Self {
-        //todo: proper authentication
-        let salt = String::from("placeholder");
+    pub fn new(username: &str, password: &[u8], email: &str) -> Self {
+        let salt = SaltString::generate(&mut OsRng);
+        let argon_2 = Argon2::default();
+        let hash = String::from(
+            argon_2
+                .hash_password(password, &salt)
+                .unwrap()
+                .serialize()
+                .as_str()
+        );
         Account {
             username: String::from(username),
-            salt: salt.clone(),
-            hash: (String::from_utf8(password.into()).unwrap()+&salt).into(),
-            balance: 0,
+            hash,
+            balance: 500000,
             email: String::from(email)
         }
     }
@@ -36,12 +42,8 @@ impl Account {
         }
     }
 
-    pub fn get_hash(&self) -> &[u8] {
+    pub fn get_hash(&self) -> &str {
         &self.hash
-    }
-
-    pub fn get_salt(&self) -> &str {
-        &self.salt
     }
 
     pub fn get_username(&self) -> &str {
@@ -50,6 +52,10 @@ impl Account {
 
     pub fn get_balance(&self) -> u64 {
         self.balance
+    }
+
+    pub fn verify_password(&self, password: &String) -> bool {
+        Argon2::default().verify_password(password.as_bytes(), &PasswordHash::new(&self.hash).unwrap()).is_ok()
     }
 }
 
@@ -67,11 +73,12 @@ enum WithdrawError {
     InsufficientBalance
 }
 
-trait SavingsVehicle {
+pub trait SavingsVehicle {
     fn project(&self, balance: u64, period: usize) -> Result<Vec<u64>, ProjectionError>;
 }
 
-enum ProjectionError {
+#[derive(Debug)]
+pub enum ProjectionError {
     InterestTooShort
 }
 
@@ -93,7 +100,7 @@ impl<T: SavingsVehicle> BankAccount<T> {
     }
 }
 
-struct CurrentAccount;
+pub struct CurrentAccount;
 
 impl SavingsVehicle for CurrentAccount {
     fn project(&self, balance: u64, period: usize) -> Result<Vec<u64>, ProjectionError> {
@@ -101,8 +108,16 @@ impl SavingsVehicle for CurrentAccount {
     }
 }
 
-struct SavingsAccount {
+pub struct SavingsAccount {
     interest_rate: Vec<f64>
+}
+
+impl SavingsAccount {
+    pub fn new() -> SavingsAccount {
+        SavingsAccount {
+            interest_rate: (0_u64..121).map(|x| (x as f64/(30.0*120000000.0)).sqrt()).collect()
+        }
+    }
 }
 
 impl SavingsVehicle for SavingsAccount {
@@ -112,7 +127,7 @@ impl SavingsVehicle for SavingsAccount {
                 ((balance as f64) *
                 (1.0+self.interest_rate.get(0).ok_or(ProjectionError::InterestTooShort)?))
                 as u64);
-        for i in 1..self.interest_rate.len() {
+        for i in 1..period {
             projection.push(
                 ((projection[i-1] as f64) *
                 (1.0 + self.interest_rate.get(i).ok_or(ProjectionError::InterestTooShort)?))

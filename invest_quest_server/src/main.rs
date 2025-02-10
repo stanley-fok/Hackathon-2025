@@ -3,7 +3,7 @@ use std::{collections::HashMap, fs::{read, read_to_string, File}, sync::{Arc, Rw
 use rand_chacha::ChaCha20Rng;
 use rand::SeedableRng;
 use warp::http::StatusCode;
-use invest_quest_server::{Account, rewards::Reward, AccountMessage};
+use invest_quest_server::{Account, rewards::Reward, AccountMessage, SavingsAccount, SavingsVehicle, CurrentAccount};
 use httpdate::{fmt_http_date, parse_http_date};
 #[tokio::main]
 async fn main() {
@@ -41,9 +41,32 @@ async fn main() {
         let accounts = accounts.clone();
         warp::cookie::<String>("auth")
             .and(warp::path::full())
-            .map(move |cookie: String, path: warp::filters::path::FullPath| {
-                let sessions = sessions.read().unwrap();
+            .and(warp::query::query())
+            .map(move |cookie: String, path: warp::filters::path::FullPath, query: HashMap<String, usize>| {
+                let sessions = if path.as_str()=="/logout" {
+                    //remove session
+                    sessions
+                        .write()
+                        .unwrap()
+                        .remove(&cookie);
+
+                    //serve landing page
+                    let mut response = Response::new(read(directory()+"/landing.html").unwrap().into());
+                    let headers = response.headers_mut();
+                    headers.insert("Content-Type", "text/html".parse().unwrap());
+
+                    //issue redirect
+                    headers.insert("Location", "/landing.html".parse().unwrap());
+                    *response.status_mut() = StatusCode::SEE_OTHER;
+
+                    //early return
+                    return(response)
+                } else {
+                    sessions.read().unwrap()
+                };
+
                 let session = sessions.get(&cookie);
+
 
                 //this if-else is a total mess, but I don't have time to work out how to do it properly
                 //this is if (session key is in session list) and (session key hasn't expired)
@@ -59,6 +82,30 @@ async fn main() {
                                 balance: account.get_balance()
                             };
                             serde_json::to_vec(&account_message).unwrap()
+                        }
+                        "/project" => {
+                            let accounts = accounts.read().unwrap();
+                            let account = &accounts[sessions.get(&cookie).unwrap().0];
+                            let mut projection_message = HashMap::<String, Vec<u64>, _>::new();
+                            if let Some(&count) = query.get("count") {
+                                projection_message
+                                    .insert(
+                                        "savings".into(),
+                                        SavingsAccount::new()
+                                            .project(account.get_balance(), count)
+                                            .unwrap()
+                                    );
+                                projection_message
+                                    .insert(
+                                        "current".into(),
+                                        CurrentAccount
+                                            .project(account.get_balance(), count)
+                                            .unwrap()
+                                );
+                                serde_json::to_vec(&projection_message).unwrap()
+                            } else {
+                                Vec::new()
+                            }
                         }
                         _ => {
                             read((directory()+&path.as_str()).replace('/',"\\").replace("%20", " ")).unwrap_or_else(|e| {
@@ -228,6 +275,9 @@ async fn main() {
     };
     let login_or_register = warp::post().and(login.or(register));
     warp::serve(auth_or_no.or(login_or_register))
+        .tls()
+        .cert_path("certificate/investquest.test.crt")
+        .key_path("certificate/investquest.test.key")
         .run(([127,0,0,1], 7878))
         .await
 }
@@ -248,7 +298,7 @@ fn login(form_response: HashMap<String, String>, user_data: Arc<RwLock<HashMap<S
     let password = form_response.get("password").ok_or(LoginError::NoPassword)?;
     let account_index = *user_data.get(username).ok_or(LoginError::InvalidUsername)?;
     let account = &accounts[account_index];
-    if account.get_hash().eq((password.clone() + account.get_salt()).as_bytes()) {
+    if account.verify_password(password) {
         let mut session_key = String::with_capacity(64);
         let mut rng = rng.lock().unwrap();
         let mut sessions = sessions.write().unwrap();
@@ -317,11 +367,11 @@ fn register(form_response: HashMap<String, String>, user_data: Arc<RwLock<HashMa
     let password = form_response
         .get("password")
         .ok_or(RegisterError::MissingValue)?
-        .as_str();
+        .as_bytes();
     let second_password = form_response
         .get("passwordconfirm")
         .ok_or(RegisterError::MissingValue)?
-        .as_str();
+        .as_bytes();
     if password!=second_password {
         return Err(RegisterError::PasswordsDontMatch)
     }
