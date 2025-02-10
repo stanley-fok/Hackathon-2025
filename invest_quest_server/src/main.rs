@@ -1,24 +1,32 @@
 use warp::{Filter, reply::Response};
-use std::{collections::HashMap, fs::read, fs::read_to_string, sync::{Arc, RwLock, Mutex}, time::{SystemTime, Duration}};
+use std::{collections::HashMap, fs::{read, read_to_string, File}, sync::{Arc, RwLock, Mutex}, time::{SystemTime, Duration}, io::{Seek, SeekFrom, Write}};
 use rand_chacha::ChaCha20Rng;
 use rand::SeedableRng;
 use warp::http::StatusCode;
-use invest_quest_server::{Account, rewards::Reward};
+use invest_quest_server::{Account, rewards::Reward, AccountMessage};
 use httpdate::{fmt_http_date, parse_http_date};
 #[tokio::main]
 async fn main() {
     let directory = || std::env::current_dir().unwrap().to_str().unwrap().to_owned();
     let accounts_json = read_to_string(directory()+"/accounts.json").unwrap_or(String::new());
-    let accounts: Vec<Account> = serde_json::from_str(&accounts_json).unwrap_or(Vec::new());
+    let accounts: Vec<Account> = serde_json::from_str(&accounts_json)
+        .unwrap_or(Vec::new());
 
     //hash map from username to `index` of account
     //this could be encapsulated but in the interests of speed I'll do it this way for the moment
-    let user_data: HashMap<String, usize> = accounts.iter().map(|a| (String::from(a.get_username()))).enumerate().map(|(x,y)| (y,x)).collect();
-    let user_data: Arc<RwLock<HashMap<String, usize>>> = Arc::new(
-        RwLock::new(
-            user_data
-        )
-    );
+    let user_data: HashMap<String, usize> =
+        accounts
+            .iter()
+            .map(|a| (String::from(a.get_username())))
+            .enumerate()
+            .map(|(x,y)| (y,x))
+            .collect();
+    let user_data: Arc<RwLock<HashMap<String, usize>>> =
+        Arc::new(
+            RwLock::new(
+                user_data
+            )
+        );
 
     //hash map from session token to `index` of account
     let sessions: Arc<RwLock<HashMap<String, (usize, SystemTime)>>> = Arc::new(RwLock::new(HashMap::new()));
@@ -30,6 +38,7 @@ async fn main() {
 
     let authorised = {
         let sessions = sessions.clone();
+        let accounts = accounts.clone();
         warp::cookie::<String>("auth")
             .and(warp::path::full())
             .map(move |cookie: String, path: warp::filters::path::FullPath| {
@@ -37,10 +46,20 @@ async fn main() {
                 let session = sessions.get(&cookie);
 
                 //this if-else is a total mess, but I don't have time to work out how to do it properly
+                //this is if (session key is in session list) and (session key hasn't expired)
                 if session.map(|(_, exp)| &SystemTime::now()<=exp).unwrap_or(false) {
                     println!("{path:?}");
                     let mut not_found = false;
                     let html = match path.as_str() {
+                        "/account" => {
+                            let accounts = accounts.read().unwrap();
+                            let account = &accounts[sessions.get(&cookie).unwrap().0];
+                            let account_message = AccountMessage {
+                                name: account.get_username(),
+                                balance: account.get_balance()
+                            };
+                            serde_json::to_vec(&account_message).unwrap()
+                        }
                         _ => {
                             read((directory()+&path.as_str()).replace('/',"\\").replace("%20", " ")).unwrap_or_else(|e| {
                                 println!("{:?}",e);
@@ -49,26 +68,32 @@ async fn main() {
                             })
                         }
                     };
-                    if path.as_str()=="/rewards_data.json" {
-                        println!("{}", String::from_utf8(html.clone()).unwrap())
-                    }
                     let mut response = Response::new(html.into());
                     match path.as_str().split_once('.') {
                         Some((_, s @ ("jpg"|"png"))) => {
                             if not_found {
                                 response.headers_mut()
                                     .insert("Content-Type", str::parse("text/html")
-                                        .unwrap());
+                                        .unwrap()
+                                    );
                             } else {
                                 response.headers_mut()
                                     .insert("Content-Type", str::parse(&("image/".to_owned() + s))
-                                        .unwrap());
+                                        .unwrap()
+                                    );
                             }
+                        }
+                        Some((_, "")) => {
+                            response.headers_mut()
+                                .insert("Content-Type", str::parse(&("text/json"))
+                                    .unwrap()
+                                );
                         }
                         Some((_, s)) => {
                             response.headers_mut()
                                 .insert("Content-Type", str::parse(&("text/".to_owned() + s))
-                                    .unwrap());
+                                    .unwrap()
+                                );
                         }
                         None => {}
                     }
@@ -116,10 +141,10 @@ async fn main() {
                             let mut headers = response.headers_mut();
                             let _ = headers
                                 .insert("Content-Type", "text/html".parse().unwrap());
-                            //let _ = headers
-                            //    .insert("Location", "/landing.html".parse().unwrap());
-                            //*response.status_mut() = StatusCode::SEE_OTHER;
-                            //*response.status_mut() = StatusCode::SEE_OTHER;
+                            let _ = headers
+                                .insert("Location", "/landing.html".parse().unwrap());
+                            *response.status_mut() = StatusCode::SEE_OTHER;
+                            *response.status_mut() = StatusCode::SEE_OTHER;
                         }
                     }
                     response
@@ -197,7 +222,7 @@ async fn main() {
             .and(warp::filters::body::form())
             .map(move |form_response: HashMap<String,String>| {
                 println!("{form_response:?}");
-                let register_result = register(form_response.clone(), user_data.clone(), accounts.clone());
+                let register_result = register(form_response.clone(), user_data.clone(), accounts.clone(), directory);
                 handle_registration(register_result, directory)
             })
     };
@@ -273,10 +298,11 @@ fn handle_login(login_result: Result<(String, SystemTime), LoginError>, director
 enum RegisterError {
     AlreadyExists,
     MissingValue,
-    PasswordsDontMatch
+    PasswordsDontMatch,
+    SaveError
 }
 
-fn register(form_response: HashMap<String, String>, user_data: Arc<RwLock<HashMap<String, usize>>>, accounts: Arc<RwLock<Vec<Account>>>) -> Result<(), RegisterError> {
+fn register(form_response: HashMap<String, String>, user_data: Arc<RwLock<HashMap<String, usize>>>, accounts: Arc<RwLock<Vec<Account>>>, directory: impl Fn()->String) -> Result<(), RegisterError> {
     println!("{:?}", form_response);
     let mut user_data = user_data.write().unwrap();
     let mut accounts = accounts.write().unwrap();
@@ -304,6 +330,25 @@ fn register(form_response: HashMap<String, String>, user_data: Arc<RwLock<HashMa
     }
     let account = Account::new(username, password, email);
     let _ = user_data.insert(username.to_owned(), accounts.len());
+    let mut accounts_file = File::options().write(true).create(true).open("accounts.json").map_err(|_| RegisterError::SaveError)?;
+
+    //seek to one off the end and then insert a ',' in place of the ']' if possible,
+    //otherwise seek to start and insert a '['
+    if let Err(_) = accounts_file.seek(SeekFrom::End(-1)) {
+        accounts_file.seek(SeekFrom::Start(0)).map_err(|_| RegisterError::SaveError)?;
+        accounts_file.write(&[b'[']).map_err(|_| RegisterError::SaveError)?;
+    } else {
+        println!("here");
+        accounts_file.write(&[b',']).map_err(|_| RegisterError::SaveError)?;
+    }
+
+    //append the account json to the file
+    serde_json::to_writer(&accounts_file, &account).map_err(|_| RegisterError::SaveError)?;
+
+    //close the json vector
+    accounts_file.write(&[b']']).map_err(|_| RegisterError::SaveError)?;
+
+    //add the account to the runtime list
     accounts.push(account);
     Ok(())
 }
@@ -323,17 +368,4 @@ fn handle_registration(register_result: Result<(), RegisterError>, directory: im
             response
         }
     }
-}
-
-fn get_duration_from_cookie(cookie_value: &String) -> Option<SystemTime> {
-    let start = cookie_value.find("Expires=")?+8;
-    let mut substr = &cookie_value[start..];
-    let end = substr.find(';').unwrap_or(substr.len());
-    let substr = &substr[..end];
-    parse_http_date(substr).ok()
-}
-
-fn get_value_from_cookie<'a>(cookie_value: &'a String) -> Option<&'a str> {
-    let end = cookie_value.find(';').unwrap_or(cookie_value.len());
-    Some(&cookie_value[..end])
 }

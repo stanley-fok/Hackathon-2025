@@ -47,7 +47,18 @@ impl Account {
     pub fn get_username(&self) -> &str {
         &self.username
     }
+
+    pub fn get_balance(&self) -> u64 {
+        self.balance
+    }
 }
+
+#[derive(serde::Serialize)]
+pub struct AccountMessage<'a> {
+    pub name: &'a str,
+    pub balance: u64
+}
+
 
 enum DepositError {
 }
