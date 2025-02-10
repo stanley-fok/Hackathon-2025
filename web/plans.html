@@ -7,8 +7,19 @@
   <title>Plans - Invest Quest</title>
   <link rel="stylesheet" href="/style.css">
   <link rel="shortcut icon" href="/logo.png">
-</head>
 
+  <style>
+    #planImage {
+      display: none;
+      width: 600px;
+      height: auto;
+      border: 3px solid white;
+      border-radius: 15px;
+      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+      margin-top: 20px;
+    }
+  </style>
+</head>
 
 <body>
 <section id="header">
@@ -25,42 +36,47 @@
 
 <section id="hero">
   <h2>Invest Quest</h2>
-  <h1>Current Plan: <span id = planSelected>None</span></h1><br>
-
+  <h1>Current Plan: <span id="planSelected">None</span></h1><br>
+  <center><img id="planImage" src="" alt="Plan Image"></center>
 </section>
+
 <center><h1 style="padding-top: 7%;">Your Plan Options</h1></center>
-<section id = "banner">
-  <section class= plansSection>
-    <h1 id = title1></h1>
+
+<section id="banner">
+  <section class="plansSection">
+    <h1 id="title1"></h1>
     <br>
-    <h3 id = description1></h3>
-    <h3>Duration: <span id = duration1> </span></h3>
-    <h3>Average Interest: <span id = interest1> </span></h3>
+    <h3 id="description1"></h3>
+    <h3>Duration: <span id="duration1"></span></h3>
+    <h3>Average Interest: <span id="interest1"></span></h3>
     <br>
-    <input type="button" class ="plansButton" value="Select">
+    <input type="button" class="plansButton" value="Select">
   </section>
-  <section class= plansSection>
-    <h1 id = title2></h1>
+
+  <section class="plansSection">
+    <h1 id="title2"></h1>
     <br>
-    <h3 id = description2></h3>
-    <h3>Duration: <span id = duration2></span></h3>
-    <h3>Average Interest: <span id = interest2> </span></h3>
+    <h3 id="description2"></h3>
+    <h3>Duration: <span id="duration2"></span></h3>
+    <h3>Average Interest: <span id="interest2"></span></h3>
     <br>
-    <input type="button" class ="plansButton" value="Select">
+    <input type="button" class="plansButton" value="Select">
   </section>
-  <section class= plansSection>
-    <h1 id = title3></h1>
+
+  <section class="plansSection">
+    <h1 id="title3"></h1>
     <br>
-    <h3 id = description3></h3>
-    <h3>Duration: <span id = duration3> </span></h3>
-    <h3>Average Interest: <span id = interest3> </span></h3>
+    <h3 id="description3"></h3>
+    <h3>Duration: <span id="duration3"></span></h3>
+    <h3>Average Interest: <span id="interest3"></span></h3>
     <br>
-    <input type="button" class ="plansButton" value="Select">
+    <input type="button" class="plansButton" value="Select">
   </section>
 </section>
 
 <script>
   var navbar = document.getElementById("navbar");
+
   function openmenu(){
     navbar.style.right = "0";
   }
@@ -68,8 +84,25 @@
   function closemenu(){
     navbar.style.right = "-260px";
   }
-</script>
 
+  const planSelectedElement = document.getElementById("planSelected");
+  const planImageElement = document.getElementById("planImage");
+
+  const buttons = document.querySelectorAll(".plansButton");
+
+  const titleData = ["Current Account", "Savings Account", "Stocks & Shares"];
+  const imagePaths = ["plots/current account.png", "plots/savings account.png", "plots/stocks&shares account.png"];
+
+  buttons.forEach((button, index) => {
+    button.addEventListener("click", () => {
+      console.log("Plan Selected:", titleData[index]);
+
+      planSelectedElement.textContent = titleData[index];
+      planImageElement.src = imagePaths[index];
+      planImageElement.style.display = "block";
+    });
+  });
+</script>
 <script src="/backend.js"></script>
 </body>
 </html>
