@@ -104,15 +104,22 @@ async fn main() {
                             let _ = response.headers_mut().insert("Content-Type", "text/html".parse().unwrap());
                             let _ = response.headers_mut().insert("Content-Type", "text/html".parse().unwrap());
                         }
+                        "/favicon.ico" => {
+                            let body = Vec::new();
+                            response = Response::new(body.into());
+                            let _ = response.headers_mut().insert("Content-Type", "text/html".parse().unwrap());
+                            let _ = response.headers_mut().insert("Content-Type", "text/html".parse().unwrap());
+                        }
                         _ => {
                             let body = read(directory()+"/landing.html").unwrap();
                             response = Response::new(body.into());
                             let mut headers = response.headers_mut();
                             let _ = headers
                                 .insert("Content-Type", "text/html".parse().unwrap());
-                            let _ = headers
-                                .insert("Location", "/landing.html".parse().unwrap());
-                            *response.status_mut() = StatusCode::SEE_OTHER;
+                            //let _ = headers
+                            //    .insert("Location", "/landing.html".parse().unwrap());
+                            //*response.status_mut() = StatusCode::SEE_OTHER;
+                            //*response.status_mut() = StatusCode::SEE_OTHER;
                         }
                     }
                     response
@@ -270,6 +277,7 @@ enum RegisterError {
 }
 
 fn register(form_response: HashMap<String, String>, user_data: Arc<RwLock<HashMap<String, usize>>>, accounts: Arc<RwLock<Vec<Account>>>) -> Result<(), RegisterError> {
+    println!("{:?}", form_response);
     let mut user_data = user_data.write().unwrap();
     let mut accounts = accounts.write().unwrap();
     let username = form_response
@@ -277,7 +285,7 @@ fn register(form_response: HashMap<String, String>, user_data: Arc<RwLock<HashMa
         .ok_or(RegisterError::MissingValue)?
         .as_str();
     let email = form_response
-        .get("email")
+        .get("e-mail")
         .ok_or(RegisterError::MissingValue)?
         .as_str();
     let password = form_response
