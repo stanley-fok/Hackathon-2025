@@ -139,7 +139,7 @@ impl SavingsVehicle for SavingsAccount {
                 ((balance as f64) *
                 (1.0+self.interest_rate.get(0).ok_or(ProjectionError::InterestTooShort)?))
                 as u64);
-        
+
         //compute next projection as previous*(1+interest_rate[i]
         for i in 0..(period-1) {
             projection.push(
