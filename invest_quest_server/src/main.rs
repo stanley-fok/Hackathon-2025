@@ -308,7 +308,6 @@ async fn main() {
         warp::path("register.html")
             .and(warp::filters::body::form())
             .map(move |form_response: HashMap<String,String>| {
-                println!("{form_response:?}");
                 let register_result = register(
                     form_response.clone(),
                     user_data.clone(),
@@ -459,7 +458,6 @@ fn register(form_response: HashMap<String, String>, user_data: Arc<RwLock<HashMa
         accounts_file.seek(SeekFrom::Start(0)).map_err(|_| RegisterError::SaveError)?;
         accounts_file.write(&[b'[']).map_err(|_| RegisterError::SaveError)?;
     } else {
-        println!("here");
         accounts_file.write(&[b',']).map_err(|_| RegisterError::SaveError)?;
     }
 
@@ -491,7 +489,6 @@ fn handle_registration(register_result: Result<(), RegisterError>, directory: im
         //again, probably need a "registration failed" page or notification,
         //but don't have one yet
         Err(e) => {
-            println!("{e:?}");
             response
         }
     }
