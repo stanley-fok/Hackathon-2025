@@ -1,6 +1,7 @@
 pub mod rewards;
 use argon2::{Argon2, PasswordHasher, PasswordVerifier, password_hash::{Salt, rand_core::OsRng, SaltString}, PasswordHash};
 
+//struct holding account data
 #[derive(serde::Serialize, serde::Deserialize, Debug, Clone)]
 pub struct Account {
     username: String,
@@ -10,6 +11,8 @@ pub struct Account {
 }
 
 impl Account {
+    //creates a new account from given data, discarding the original password after salting and hashing it
+    //uses Argon2id according to best practices
     pub fn new(username: &str, password: &[u8], email: &str) -> Self {
         let salt = SaltString::generate(&mut OsRng);
         let argon_2 = Argon2::default();
@@ -28,12 +31,12 @@ impl Account {
         }
     }
 
-    fn deposit(&mut self, money: u64) -> Result<(), DepositError> {
+    pub fn deposit(&mut self, money: u64) -> Result<(), DepositError> {
         self.balance += money;
         Ok(())
     }
 
-    fn withdraw(&mut self, money: u64) -> Result<u64, WithdrawError> {
+    pub fn withdraw(&mut self, money: u64) -> Result<u64, WithdrawError> {
         if self.balance>=money {
             self.balance -= money;
             Ok(money)
@@ -59,6 +62,7 @@ impl Account {
     }
 }
 
+//message struct to communicate account data to frontend
 #[derive(serde::Serialize)]
 pub struct AccountMessage<'a> {
     pub name: &'a str,
@@ -73,6 +77,7 @@ enum WithdrawError {
     InsufficientBalance
 }
 
+//used for a unified interface for projecting different savings vehicles
 pub trait SavingsVehicle {
     fn project(&self, balance: u64, period: usize) -> Result<Vec<u64>, ProjectionError>;
 }
@@ -82,6 +87,8 @@ pub enum ProjectionError {
     InterestTooShort
 }
 
+//the idea here is to attach an bank account to the user's account which shows
+//how they're currently saving
 struct BankAccount<T: SavingsVehicle> {
     balance: u64,
     savings_vehicle: T
@@ -100,14 +107,17 @@ impl<T: SavingsVehicle> BankAccount<T> {
     }
 }
 
+//struct representing a current account
 pub struct CurrentAccount;
 
 impl SavingsVehicle for CurrentAccount {
     fn project(&self, balance: u64, period: usize) -> Result<Vec<u64>, ProjectionError> {
+        //current accounts don't accrue interest
         Ok(std::iter::repeat(balance).take(period).collect())
     }
 }
 
+//struct representing a savings account
 pub struct SavingsAccount {
     interest_rate: Vec<f64>
 }
@@ -115,6 +125,7 @@ pub struct SavingsAccount {
 impl SavingsAccount {
     pub fn new() -> SavingsAccount {
         SavingsAccount {
+            //sample interest rate based on a concave yield curve
             interest_rate: (0_u64..121).map(|x| (x as f64/(30.0*120000000.0)).sqrt()).collect()
         }
     }
@@ -123,13 +134,16 @@ impl SavingsAccount {
 impl SavingsVehicle for SavingsAccount {
     fn project(&self, balance: u64, period: usize) -> Result<Vec<u64>, ProjectionError> {
         let mut projection = Vec::with_capacity(period);
+        //first value is current balance
         projection.push(
                 ((balance as f64) *
                 (1.0+self.interest_rate.get(0).ok_or(ProjectionError::InterestTooShort)?))
                 as u64);
-        for i in 1..period {
+        
+        //compute next projection as previous*(1+interest_rate[i]
+        for i in 0..(period-1) {
             projection.push(
-                ((projection[i-1] as f64) *
+                ((projection[i] as f64) *
                 (1.0 + self.interest_rate.get(i).ok_or(ProjectionError::InterestTooShort)?))
                 as u64);
         }
